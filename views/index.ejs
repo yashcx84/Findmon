@@ -1,0 +1,63 @@
+<!-- views/index.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unsplash Photo Search</title>
+</head>
+<link rel="stylesheet" href="../stylesheets/style.css">
+
+<body>
+    <div class="main">
+        <h1>FINDMON.ox</h1>
+        <form action="/search" method="post" autocomplete="off">
+            <input type="text" id="query" name="query" placeholder="Search for Images, Illustrations, Portraits etc.">
+            <button type="submit">Search</button>
+        </form>
+    </div>
+
+    <% if (error) { %>
+        <p style="color: red;">
+            <%= error %>
+        </p>
+        <% } else if (images.length> 0) { %>
+            <div class="outcome">
+                <hr>
+                <h2>Results for <%= qrr %>
+                </h2>
+                <div class="imgContainer">
+                    <% images.forEach((image, index)=> { %>
+                        <div class="imgs">
+                            <img src="<%= image %>" alt="Unsplash Photo">
+                            <button onclick="downloadImage('<%= image %>', 'photo_<%= index + 1 %>')">Download
+                                JPG</button>
+                        </div>
+                        <% }); %>
+                </div>
+            </div>
+
+            <script>
+                function downloadImage(url, filename) {
+                    var xhr = new XMLHttpRequest();
+                    xhr.responseType = 'blob';
+                    xhr.onload = function () {
+                        var a = document.createElement('a');
+                        a.href = window.URL.createObjectURL(xhr.response);
+                        a.download = filename;
+                        a.style.display = 'none';
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                    };
+
+                    xhr.open('GET', url);
+                    xhr.send();
+                }
+            </script>
+
+            <% } %>
+</body>
+
+</html>
